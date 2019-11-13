@@ -1,10 +1,10 @@
 # Minimum version can be no higher than 3.5 as Ubuntu package management uses this version.
 cmake_minimum_required(VERSION 3.5)
 
-project (EX03-LinkedLists)
+project (EX04-Stacks)
 
-set(SOURCE_PREFIX "linkedlists")
-set(EXEC_NAME "LinkedLists")
+set(SOURCE_PREFIX "stacks")
+set(EXEC_NAME "Stacks")
 set(CMAKE_CXX_STANDARD 11)
 
 if(EXISTS ${CMAKE_HOME_DIRECTORY}/csv15-lib/CMakeLists.txt)
