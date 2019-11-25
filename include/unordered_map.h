@@ -79,6 +79,8 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
                 _size++;
                 if (load_factor() >= max_load_factor()) {
                     rehash(_capacity + 1);
+                    _size++;
+                    where = _find(key);
                 }
                 _buckets[where] = new std::pair<Key, Val>();
                 *_buckets[where] = std::make_pair(key, Val());
