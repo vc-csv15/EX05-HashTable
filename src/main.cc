@@ -8,7 +8,7 @@
 #include "unordered_map.h"
 
 using edu::vcccd::vc::csv15::unordered_map;
-
+using namespace std;
 template <typename Key, typename Val>
 constexpr size_t unordered_map<Key, Val>::_BUCKET_SIZES[];
 
@@ -18,6 +18,18 @@ int main(int argc, char *argv[]) {
     map["test"] = 123;
     map["one more"] = 908;
     map["last one"] = 1234;
+    map["adsf"] = 123;
+    map["dasklfjkdaslf"] = 123423;
+    map["this will berak "] = 42069;
+    map["will this break it"] = 32423234;
+    map["can i do it this time"] = 12361262;
+    map["will this one break it hopefully"] = 123123;
+    map["asehktldsjakfl"] = 1234;
+    map["asehktldsadsfsadfjakfl"] = 1234;
+    map["asehktldsjakflasdfasdfsadfsadf"] = 1234;
+    map["asehktldsjasdafasdfsadfsdafsdafsdafkfl"] = 1234;
+    map["aseadsfhsdafktldsjasdfakfl"] = 1234;
+    cout << "last debug before the info " << endl;
     std::cout << map["test"] << std::endl;
     std::cout << map["other"] << std::endl;
     std::cout << map["one more"] << std::endl;
