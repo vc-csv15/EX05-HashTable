@@ -73,16 +73,23 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
             return *this[key];
         }
 
-        Val &operator [](const Key &key) {
+        Val &operator [](const Key &key) { // somehow this is what is broken
             auto where = _find(key);
             if (where <= _capacity && _buckets[where] == nullptr) {
                 _size++;
-                if (load_factor() >= max_load_factor()) {
+                if (load_factor() >= max_load_factor()) {   //something around here is breaking the code
                     rehash(_capacity + 1);
+                    _size++;
+                    where = _find(key);
+                   // _size = _size + _BUCKET_SIZES[0];
+
                 }
                 _buckets[where] = new std::pair<Key, Val>();
                 *_buckets[where] = std::make_pair(key, Val());
+              //  _size++;
             }
+//           _size++;
+//            _size--;
             return _buckets[where]->second;
         }
 
@@ -157,7 +164,7 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
         }
 
         double load_factor() const {
-            return 1.0 * size() / _capacity;
+            return (1.0 * size()) / _capacity;
         }
 
         double max_load_factor() const {
@@ -178,6 +185,7 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
             _buckets = new std::pair<Key, Val>*[_capacity];
             for (int i = 0; i < _capacity; i++) {
                 _buckets[i] = nullptr;
+               // _size++;
             }
 
             for (auto curr = old_buckets; curr < old_buckets + capacity; curr++) {
@@ -185,6 +193,7 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
                     (*this)[(*curr)->first] = (*curr)->second;
                 }
             }
+            _size = this->size();
             delete old_buckets;
         }
 
