@@ -137,7 +137,9 @@ TEST_F(StacksFixture, TestStackPopulated) {
 }
 
 TEST_F(StacksFixture, TestEmptyParens) {
-    ASSERT_TRUE(balanced_parens(""));
+    bool result = balanced_parens("");
+    std::cout << result << std::endl;
+    ASSERT_TRUE(result);
     _testScore += 2;
 }
 
@@ -147,7 +149,9 @@ TEST_F(StacksFixture, TestBalancedAngles) {
 }
 
 TEST_F(StacksFixture, TestUnbalancedCurlys) {
-    ASSERT_FALSE(balanced_curly("{{}}{}{{}}{}}"));
+    bool result = balanced_curly("{{}}{}{{}}{}}");
+    std::cout << result << std::endl;
+    ASSERT_FALSE(result);
     _testScore += 3;
 }
 
