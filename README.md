@@ -8,7 +8,7 @@ probing or double hashing.
 
 The first thing you will need to do is accept the invitation to this 
 assignment from GitHub Classroom. You can click 
-[here](https://classroom.github.com/a/BfNk3QQk) to accept the 
+[here](https://classroom.github.com/a/8bUbXXr0) to accept the 
 invitation, and get started.
 
 Be sure that you accept the invitation first and use the URL to your new project when you clone it in CLion. After copying
