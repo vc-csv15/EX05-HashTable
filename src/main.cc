@@ -9,9 +9,6 @@
 
 using edu::vcccd::vc::csv15::unordered_map;
 
-template <typename Key, typename Val>
-constexpr size_t unordered_map<Key, Val>::_BUCKET_SIZES[];
-
 int main(int argc, char *argv[]) {
     unordered_map<std::string, int> map;
     map["other"] = 456;

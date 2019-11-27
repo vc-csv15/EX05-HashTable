@@ -38,11 +38,11 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
                 return old;
             }
 
-            bool operator ==(const iterator &other) {
+            bool operator ==(const iterator &other) const {
                 return _current == other._current;
             }
 
-            bool operator !=(const iterator &other) {
+            bool operator !=(const iterator &other) const {
                 return _current != other._current;
             }
         };
@@ -79,6 +79,8 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
                 _size++;
                 if (load_factor() >= max_load_factor()) {
                     rehash(_capacity + 1);
+                    _size++;
+                    where = _find(key);
                 }
                 _buckets[where] = new std::pair<Key, Val>();
                 *_buckets[where] = std::make_pair(key, Val());
@@ -93,15 +95,16 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
                    _buckets + bucket       != end()._current  &&
                    _buckets[bucket]        != nullptr &&
                    _buckets[bucket]->first != key; i++) {
-                // Resolve collision
-                bucket = (hash + i) % _capacity;
+                // Resolve collisions here
             }
             return bucket;
         }
 
         iterator find(const Key &key) {
             auto where = _find(key);
-            return iterator(_buckets + where, end());
+            return where <= _capacity && _buckets[where] != nullptr ?
+                     iterator(_buckets + where, _buckets + _capacity) :
+                     end();
         }
 
         size_t count(const Key &key) {
@@ -144,7 +147,7 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
         }
 
         size_t bucket_max_count () const {
-            return UINT64_MAX;
+            return __INT64_MAX__;
         }
 
         size_t bucket_size(size_t n) const {
@@ -198,5 +201,9 @@ namespace edu { namespace vcccd { namespace vc { namespace csv15 {
             return std::hash<Key>();
         }
     };
+
+    template <typename Key, typename Val>
+    constexpr size_t unordered_map<Key, Val>::_BUCKET_SIZES[];
+
 }}}}
 #endif //EX05_HASHTABLE_UNORDERED_MAP_H

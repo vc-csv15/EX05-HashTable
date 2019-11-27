@@ -39,8 +39,7 @@
 #include <chrono>
 #include <iostream>
 
-#include "stack.h"
-#include "balanced.h"
+#include "unordered_map.h"
 
 #include "gtest/gtest.h"
 #include "GTestNoDeath.h"
@@ -51,7 +50,7 @@ using std::string;
 
 using namespace ::testing_internal;
 
-class StacksFixture : public ::testing::Test {
+class HashTableFixture : public ::testing::Test {
 protected:
     static const uint MAX_TESTED_SCORE = 20;
     static const uint MAX_OVERALL_SCORE = 25;
@@ -78,86 +77,83 @@ protected:
     }
 };
 
-uint StacksFixture::_testScore = 0;
+uint HashTableFixture::_testScore = 0;
 
 // Check std::lists equivalence (go ahead, I dare you) by uncommenting
 // this line, and commenting out the following line.
 // using std::list;
-using edu::vcccd::vc::csv15::stack;
-using edu::vcccd::vc::csv15::balanced_parens;
-using edu::vcccd::vc::csv15::balanced_curly;
-using edu::vcccd::vc::csv15::balanced_angle;
-using edu::vcccd::vc::csv15::balanced_square;
+using edu::vcccd::vc::csv15::unordered_map;
 
-TEST_F(StacksFixture, TestEmptyStack) {
-    stack<int> int_stack;
-    ASSERT_TRUE(int_stack.empty());
-    ASSERT_EQ(0, int_stack.size());
-    _testScore += 2;
+TEST_F(HashTableFixture, TestEmptyHashTable) {
+    unordered_map<std::string, int> map;
+    ASSERT_TRUE(map.empty());
+    ASSERT_EQ(0, map.size());
+    ASSERT_EQ(0.0, map.load_factor());
+    ASSERT_EQ(map.end(), map.find(std::string("string")));
+    _testScore += 3;
 }
 
-TEST_F(StacksFixture, TestStackPushTop) {
-    stack<float> float_stack;
-    float_stack.push(1.0);
-    ASSERT_FALSE(float_stack.empty());
-    ASSERT_EQ(1, float_stack.size());
-    ASSERT_EQ(1.0, float_stack.top());
-    _testScore += 2;
+TEST_F(HashTableFixture, TestBasicHashTable) {
+    unordered_map<std::string, int> map;
+    map["test1"] = 1;
+    ASSERT_EQ(1, map.size());
+    ASSERT_EQ(1, map["test1"]);
+    ASSERT_NE(map.end(), map.find("test1"));
+    _testScore += 3;
 }
 
-TEST_F(StacksFixture, TestStackPop) {
-    stack<float> float_stack;
-    float_stack.push(1.0);
-    ASSERT_FALSE(float_stack.empty());
-    ASSERT_EQ(1, float_stack.size());
-    ASSERT_EQ(1.0, float_stack.top());
+TEST_F(HashTableFixture, TestOneRehash) {
+    unordered_map<std::string, int> map;
+    map["test1"] = 1;
+    map["test2"] = 2;
+    ASSERT_EQ(2, map.size());
+    ASSERT_EQ(1, map["test1"]);
+    ASSERT_EQ(2, map["test2"]);
+    ASSERT_NE(map.end(), map.find("test1"));
+    ASSERT_NE(map.end(), map.find("test2"));
+    _testScore += 3;
+}
 
-    float_stack.pop();
-    ASSERT_TRUE(float_stack.empty());
-    ASSERT_EQ(0, float_stack.size());
+TEST_F(HashTableFixture, TestMultipleRehash) {
+    unordered_map<std::string, int> map;
+    map["test1"] = 1;
+    map["test2"] = 2;
+    ASSERT_EQ(2, map.size());
+    ASSERT_EQ(1, map["test1"]);
+    ASSERT_EQ(2, map["test2"]);
+    ASSERT_EQ(5, map.bucket_count());
+    ASSERT_NE(map.end(), map.find("test1"));
+    ASSERT_NE(map.end(), map.find("test2"));
+    _testScore += 3;
+
+    map["test3"] = 3;
+    map["test4"] = 4;
+    ASSERT_EQ(4, map.size());
+    ASSERT_EQ(3, map["test3"]);
+    ASSERT_EQ(4, map["test4"]);
+    ASSERT_EQ(11, map.bucket_count());
+    ASSERT_NE(map.end(), map.find("test3"));
+    ASSERT_NE(map.end(), map.find("test4"));
     _testScore += 4;
-}
 
-TEST_F(StacksFixture, TestStackPopulated) {
-    stack<float> float_stack;
-    for (int i = 0; i < 10; i++) {
-        float_stack.push(1.0 * (i + 1));
-    }
-
-    for (int i = 10; i > 0; i--) {
-        float_stack.pop();
-        ASSERT_FALSE(float_stack.empty() && i != 1);
-        ASSERT_EQ(i-1, float_stack.size());
-        if (float_stack.size() > 0) ASSERT_EQ(1.0 * (i-1), float_stack.top());
-    }
-
-    ASSERT_TRUE(float_stack.empty());
-    ASSERT_EQ(0, float_stack.size());
-    _testScore += 2;
-}
-
-TEST_F(StacksFixture, TestEmptyParens) {
-    bool result = balanced_parens("");
-    std::cout << result << std::endl;
-    ASSERT_TRUE(result);
-    _testScore += 2;
-}
-
-TEST_F(StacksFixture, TestBalancedAngles) {
-    ASSERT_TRUE(balanced_angle("<<>><><<<>><>>"));
-    _testScore += 2;
-}
-
-TEST_F(StacksFixture, TestUnbalancedCurlys) {
-    bool result = balanced_curly("{{}}{}{{}}{}}");
-    std::cout << result << std::endl;
-    ASSERT_FALSE(result);
-    _testScore += 3;
-}
-
-TEST_F(StacksFixture, TestUnalancedSquares) {
-    ASSERT_FALSE(balanced_square("[[]][][[[][]]"));
-    _testScore += 3;
+    map["test5"] = 5;
+    map["test6"] = 6;
+    map["test7"] = 7;
+    map["test8"] = 8;
+    map["test9"] = 9;
+    ASSERT_EQ(9, map.size());
+    ASSERT_EQ(5, map["test5"]);
+    ASSERT_EQ(6, map["test6"]);
+    ASSERT_EQ(7, map["test7"]);
+    ASSERT_EQ(8, map["test8"]);
+    ASSERT_EQ(9, map["test9"]);
+    ASSERT_EQ(23, map.bucket_count());
+    ASSERT_NE(map.end(), map.find("test5"));
+    ASSERT_NE(map.end(), map.find("test6"));
+    ASSERT_NE(map.end(), map.find("test7"));
+    ASSERT_NE(map.end(), map.find("test8"));
+    ASSERT_NE(map.end(), map.find("test9"));
+    _testScore += 4;
 }
 
 }
